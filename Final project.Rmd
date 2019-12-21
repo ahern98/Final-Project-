@@ -1,0 +1,90 @@
+---
+title: "Final Project"
+author: "Alejandro Hernandez"
+date: "12/11/2019"
+output: html_document
+---
+```
+1.) Kaggle is the wesbite I got this dataset. The variables in this dataset are 
+name: of the athlete
+nationality: nation of athlete
+sex: Gender of athlete
+dob: Birthday
+height
+weight
+sport: what they are competing in 
+gold
+silver
+bronze
+```{r}
+#2.)
+sum(is.na(olympics))
+sum(is.na(olympics))/nrow(olympics)*ncol(olympics)
+is.na(olympics)
+
+```
+3.) Do men win more gold than women? 
+Is there a correlation between winning gold medals and weight?
+```{r}
+#4.)
+head(oly_df)
+subset_1<-select(oly_df, weight:gold)
+head(subset_1)
+subset_2<-select(oly_df, -(weight:gold))
+head(subset_2)
+ggplot(data = oly_df) + 
+     geom_bar(mapping = aes(x = sex, fill = gold))
+ with(oly_df, plot(weight, gold, xlab = "Weight", ylab = "gold"))
+
+```
+5.) BEfore I used my any plots i was probing around to see the head of weight and gold. I used the select function to view this selectivly and i used the scatter plot to determine my answer. As a general group, the answer is no because there are so many sports that it evens out. There is no Correlation between weight and gold. Maybe for some sports though.
+Then I wanted to find which sex won the most gold medals in a general standpoint and i used the bar graph to view that men had won more gold medals than women but it can go deeper such as more men representing each country.
+
+6.)
+Question : is the mean height of the male athletes is greater than that of female athletes?
+Ho : The mean height of men and women are equal
+Ha : men have a greater mean height than women
+the confidence interval is 1.69 for women and for men it was 1.81.
+I choose to reject Ho because clearly they are not equal at all with men hitting more than ten on the mean than women did.
+there is enough evidence to show that the mean height for men is greater than women.
+There is enough evidence that shows males are more than ten above females.
+```{r}
+male <- oly_df %>% filter(sex == "male")
+female <- oly_df %>% filter(sex == "female")
+t.test(male$height, alternative = "greater", mu = 1.70, conf.level = 0.95)
+t.test(female$height, alternative = "greater", mu = 1.70)
+ ggplot(data = oly_df, mapping = aes(x = sex, y = height)) + 
+    geom_boxplot()
+ggplot(data = oly_df) + 
+  geom_violin(mapping = aes(x = sex, y = height))
+
+```
+7.) Is there a correlation between height and gold medals won?
+Ho: gold and height are independent
+Ha: Gold and height are dependent
+I reject Ho because the pvalue is less than the alpha
+There is enough evidence to show that height and gold are related.
+```{r}
+hei_gold <- table(oly_df$height, oly_df$gold)
+result <- chisq.test(hei_gold)
+result
+t.test(oly_df$height, oly_df$gold, alternative="greater",
+       conf.level = 0.95)
+ggplot(data = oly_df) + 
+  geom_violin(mapping = aes(x = gold, y = height))
+```
+8.) is there a covariation that the more you weight the bigger in height u are  height?
+sorry but there are no other quantitive variables i can really look at. They have a strong positive correlation the more you way the bigger in height ou actually are. My model is statistically significant becase of the P value and the strong positive correlation.
+```{r}
+with(oly_df, plot(weight, height, xlab = "weight", ylab = "height")) 
+lin_model <- lm(oly_df$height ~ oly_df$weight)
+lin_model
+ggplot(data=oly_df, mapping=aes(height, weight)) +
+    geom_point() +
+    geom_smooth(method='lm')
+t.test(oly_df$height, oly_df$weight, alternative = "greater", mu = 150,
+          conf.level = 0.95)
+summary(lin_model)
+```
+
+9.)Ther are no ethical concerns i have about my data set. Olympians from every ocuntry know they are on the international stage and they use statistics like these to determine which country does best, which country does worst, which country stood out and so on. The information they aregathering is possibly with consent from each athlete due to the fact that everyone wants to know the questions i posted above. other than that Its not like this data set is using this as an experiment to try use the information for psychological use. Kinda like Facebook did when they got cuaght manipulating ads  and peoples feed to have a social "experiement".
